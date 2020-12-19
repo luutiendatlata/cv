@@ -1,0 +1,88 @@
+﻿@*@model IEnumerable<Demo5.Models.Post>*@
+@model PaginatedList<Demo5.Models.Post>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h4>All recent posts</h4>
+
+
+<div id="root"></div>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/16.13.0/umd/react.development.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.13.0/umd/react-dom.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.7.1/remarkable.min.js"></script>
+<script src="~/js/index.js"></script>
+
+    <div class="card-deck">
+
+        @foreach (var item in Model)
+        {
+            <div class="card" style="width:400px">
+                <h3 class="card-header">@Html.DisplayFor(modelItem => item.title)</h3>
+                <img class="card-img-top" src="~/img/@Html.DisplayFor(modelItem=>item.imageName)" alt="Card image" style="width:100%">
+                <b class="card-text">@Html.DisplayFor(modelItem => item.category.name)</b>
+                <p class="card-text">Written by @Html.DisplayFor(modelItem => item.user.UserName)</p>
+                <i class="card-subtitle">@Html.DisplayFor(modelItem => item.postTime)</i>
+                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Read more</a>
+            </div>
+        }
+    </div>
+    <br />
+    <br />
+
+    @{
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        var totalPages = Model.getTotalPages;
+
+    }
+    <ul class="pagination">
+        <li class="page-item @prevDisabled">
+            <a asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               class="page-link ">
+                Previous
+            </a>
+        </li>
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            var thisPage = Model.PageIndex == @i ? "active" : "";
+            <li class="page-item @thisPage">
+                <a asp-action="Index"
+                   asp-route-pageNumber="@i"
+                   class="page-link ">
+                    @i
+                </a>
+            </li>
+        }
+
+        <li class="page-item @nextDisabled">
+            <a asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               class="page-link ">
+                Next
+            </a>
+        </li>
+    </ul>
+    @*<a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           class="btn btn-default @prevDisabled">
+            Previous
+        </a>
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            var thisPage = Model.PageIndex == @i ? "active" : "";
+            <a asp-action="Index"
+               asp-route-pageNumber="@i"
+               class="btn btn-default @thisPage">
+                @i
+            </a>
+        }
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           class="btn btn-default @nextDisabled">
+            Next
+        </a>*@

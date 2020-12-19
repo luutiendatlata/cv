@@ -1,0 +1,130 @@
+﻿@*@model IEnumerable<Demo5.Models.Post>*@
+@model PaginatedList<Demo5.Models.Post>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>My posts</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
+</p>
+<!--<table class="table">
+    <thead>
+        <tr>
+            <th>-->
+                @*@Html.DisplayNameFor(model => model.title)*@<!--Title
+            </th>
+            <th>
+                Category
+            </th>
+            <th>-->
+                @*@Html.DisplayNameFor(model => model.content)*@<!--Content
+            </th>
+            <th>-->
+                @*@Html.DisplayNameFor(model => model.imageName)*@<!--Image
+            </th>
+            <th>-->
+                @*@Html.DisplayNameFor(model => model.user)*@<!--UserName
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.category.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.content)
+                </td>
+                <td>
+                    <img src="~/img/@Html.DisplayFor(modelItem=>item.imageName)" width="200" height="121" alt="Image">
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.user.UserName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>-->
+
+
+<div class="card-deck">
+
+    @foreach (var item in Model)
+    {
+    <div class="card" style="width:400px">
+        <h3 class="card-header">@Html.DisplayFor(modelItem => item.title)</h3>
+        <img class="card-img-top" src="~/img/@Html.DisplayFor(modelItem=>item.imageName)" alt="Card image" style="width:100%">
+        <b class="card-text">@Html.DisplayFor(modelItem => item.category.name)</b>
+        <p class="card-text">Written by @Html.DisplayFor(modelItem => item.user.UserName)</p>
+        <i class="card-subtitle">@Html.DisplayFor(modelItem => item.postTime)</i>
+        <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Read more</a>
+        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+        <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+    </div>
+    }
+</div>
+@*@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<a asp-action="Index"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>*@
+<br />
+<br />
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var totalPages = Model.getTotalPages;
+
+}
+<ul class="pagination">
+    <li class="page-item @prevDisabled">
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           class="page-link ">
+            Previous
+        </a>
+    </li>
+    @for (int i = 1; i <= totalPages; i++)
+    {
+        var thisPage = Model.PageIndex == @i ? "active" : "";
+        <li class="page-item @thisPage">
+            <a asp-action="Index"
+               asp-route-pageNumber="@i"
+               class="page-link ">
+                @i
+            </a>
+        </li>
+    }
+
+    <li class="page-item @nextDisabled">
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           class="page-link ">
+            Next
+        </a>
+    </li>
+</ul>

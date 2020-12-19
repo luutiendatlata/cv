@@ -1,0 +1,120 @@
+﻿@model Demo5.Models.Post
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Details";
+    ViewBag.Title = "Comments List";
+    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+@*<div>
+    <h4>Post</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.category)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.category.name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.content)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.content)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.imageName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.imageName)
+        </dd>
+        <dd>
+            <img src="~/img/@Html.ValueFor(model=>model.imageName)" alt="Image">
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.user)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.user.Id)
+        </dd>
+    </dl>
+</div>*@
+<div class="col-sm-8">
+    <h2>@Html.DisplayFor(model => model.title)</h2>
+    <i>Written by  @Html.DisplayFor(model => model.user.UserName),  @Html.DisplayFor(model => model.postTime)</i>
+    <h6>Category:  @Html.DisplayFor(model => model.category.name)</h6>
+    <img style="max-width:80%;" src="~/img/@Html.ValueFor(model=>model.imageName)" alt="Image">
+    <p>@Html.DisplayFor(model => model.content)</p>
+
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+<hr />
+<div>
+    <h4>Comments</h4>
+    
+    <div class="row">
+        <div class="col-md-4">
+
+            <form asp-action="AddComment" asp-route-id="@Model.Id">
+                <div class="text-danger"></div>
+                <div class="form-group">
+                    <label class="control-label">Insert new comment</label>
+                    <input type="text" id="txtContent" name="content" class="form-control" />
+                    <span class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Comment" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <table class="table">
+
+        <tbody>
+            @foreach (var item in ViewBag.Comments)
+            {
+            <tr>
+                <td>
+                    <b>@item.user.UserName</b>
+                </td>
+                <td>
+                    @item.content
+                </td>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    @if (item.user.Id == ViewBag.User)
+                    {
+                        <td>
+                            <a asp-controller="Comments" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    }
+
+                }
+
+
+            </tr>
+
+            }
+        </tbody>
+    </table>
+</div>
